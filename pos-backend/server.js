@@ -19,8 +19,7 @@
 //   console.log("✅ Server running on port 5000");
 // });
 
-require("dotenv").config({ override: true });
-
+require('dotenv').config({ override: true });
 const express = require("express");
 const cors = require("cors");
 
@@ -28,27 +27,31 @@ const authRoutes = require("./modules/restaurant/restaurant.routes");
 
 const app = express();
 
-// CORS configuration
+/* ✅ CORS FIX */
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://restaurant-pos-system-psl1.vercel.app"
+];
+
 app.use(cors({
-  origin: [
-    "http://localhost:5173",   // local frontend
-    "https://your-frontend.vercel.app"  // replace after Vercel deploy
-  ],
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("CORS not allowed"));
+    }
+  },
   credentials: true
 }));
 
-// middleware
 app.use(express.json());
 
-// routes
 app.use("/api", authRoutes);
 
-// health check route
 app.get("/", (req, res) => {
   res.send("🚀 Restaurant POS Backend Running");
 });
 
-// Render uses dynamic port
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
