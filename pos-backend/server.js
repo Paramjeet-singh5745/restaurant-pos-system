@@ -27,27 +27,23 @@ const authRoutes = require("./modules/restaurant/restaurant.routes");
 
 const app = express();
 
-/* ✅ CORS FIX */
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://restaurant-pos-system-psl1.vercel.app"
-];
-
+/* ✅ PROPER CORS FIX */
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("CORS not allowed"));
-    }
-  },
+  origin: [
+    "http://localhost:5173",
+    "https://restaurant-pos-system-psl1.vercel.app"
+  ],
+  methods: ["GET","POST","PUT","DELETE"],
+  allowedHeaders: ["Content-Type","Authorization"],
   credentials: true
 }));
 
 app.use(express.json());
 
+/* ROUTES */
 app.use("/api", authRoutes);
 
+/* TEST ROUTE */
 app.get("/", (req, res) => {
   res.send("🚀 Restaurant POS Backend Running");
 });
