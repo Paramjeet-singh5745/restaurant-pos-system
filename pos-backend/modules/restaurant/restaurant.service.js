@@ -683,21 +683,29 @@ exports.deleteCategory = async (categoryId, restaurantId) => {
 
 
 /* ===== MENU ITEMS ===== */
+// service.js
+const sql = require("mssql");
+const db = require("../db"); // your db config
 
 exports.getMenuItems = async (restaurantId, categoryId) => {
-  const pool = await db.poolPromise;
+  try {
+    const pool = await db.poolPromise;
 
-  const res = await pool.request()
-    .input("restaurant_id", sql.Int, restaurantId)
-    .input("category_id", sql.Int, categoryId)
-    .query(`
-      SELECT item_id, item_name, price, isAvailable
-      FROM master.MenuItems
-      WHERE restaurant_id = @restaurant_id
-        AND category_id = @category_id
-    `);
+    const result = await pool.request()
+      .input("restaurant_id", sql.Int, restaurantId)
+      .input("category_id", sql.Int, categoryId)
+      .query(`
+        SELECT item_id, item_name, price, isAvailable
+        FROM master.MenuItems
+        WHERE restaurant_id = @restaurant_id
+          AND category_id = @category_id
+      `);
 
-  return res.recordset;
+    return result.recordset;
+  } catch (error) {
+    console.error("Database error in getMenuItems:", error);
+    throw new Error("Database query failed");
+  }
 };
 
 exports.createMenuItem = async (restaurantId, data) => {

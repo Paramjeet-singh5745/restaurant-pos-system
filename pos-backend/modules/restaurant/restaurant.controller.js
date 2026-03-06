@@ -389,14 +389,27 @@ exports.deleteCategory = async (req, res) => {
 
 /* ===== MENU ITEMS ===== */
 
+// controller.js
 exports.getMenuItems = async (req, res) => {
-  const data = await service.getMenuItems(
-    req.user.restaurant_id,
-    req.params.categoryId
-  );
-  res.json({ data });
-};
+  const categoryId = parseInt(req.params.categoryId, 10);
 
+  if (isNaN(categoryId)) {
+    return res.status(400).json({ message: "Invalid category ID" });
+  }
+
+  try {
+    const items = await service.getMenuItems(req.user.restaurant_id, categoryId);
+
+    if (!items || items.length === 0) {
+      return res.status(404).json({ message: "No menu items found" });
+    }
+
+    res.json({ data: items });
+  } catch (error) {
+    console.error("Error fetching menu items:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
 exports.createMenuItem = async (req, res) => {
   await service.createMenuItem(req.user.restaurant_id, req.body);
   res.json({ message: "Item added" });
