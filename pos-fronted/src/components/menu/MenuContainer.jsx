@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../../utils/api";
 import { GrRadialSelected } from "react-icons/gr";
 import { FaShoppingCart } from "react-icons/fa";
 import { getRandomBg } from "../../utils";
@@ -27,12 +27,7 @@ const MenuContainer = () => {
     try {
       setLoading(true);
 
-      const res = await axios.get(
-        "http://localhost:5000/api/menu/full",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+   const res = await api.get("/api/menu/full");
 
       const formattedMenus = res.data.data.map((category) => ({
         ...category,

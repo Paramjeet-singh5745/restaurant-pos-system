@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import axios from "axios";
+import api from "../utils/api";
 import BottomNav from "../components/shared/BottomNav";
 import Greeting from "../components/home/Greeting";
 import { getEmployeeAuth, getEmployeeId } from "../utils/auth";
@@ -54,10 +54,7 @@ const Home = () => {
   =================================*/
   const fetchDashboard = useCallback(async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:5000/api/home/${userId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+       const res = await api.get(`/home/${userId}`);
       setDashboard(res.data);
       setLoading(false);
     } catch (err) {

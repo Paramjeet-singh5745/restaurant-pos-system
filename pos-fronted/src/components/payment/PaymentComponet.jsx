@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import axios from "axios";
+import api from "../../utils/api";
 import { X, Search } from "lucide-react";
 import { getEmployeeAuth } from "../../utils/auth";
 import BackButton from "../shared/BackButton";
@@ -29,12 +29,7 @@ useEffect(() => {
       const token = getEmployeeAuth();
       if (!token) return;
 
-      const res = await axios.get(
-        "http://localhost:5000/api/payments-all",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+       const res = await api.get("/api/payments-all"); // ←
 
       setPayments(res.data.data || []);
     } catch (err) {
@@ -50,12 +45,7 @@ useEffect(() => {
       const token = getEmployeeAuth();
       if (!token) return;
 
-      const res = await axios.get(
-        `http://localhost:5000/api/payments/${orderId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+     const res = await api.get(`/api/payments/${orderId}`);
 
       setSelectedPayment(res.data.data || null);
     } catch (err) {

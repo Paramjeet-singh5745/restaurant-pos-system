@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState, useCallback } from "react";
-import axios from "../utils/api";
+import api from "../utils/api";
 import BackButton from "../components/shared/BackButton";
 import BottomNav from "../components/shared/BottomNav";
 import TableCard from "../components/table/TableCard";
@@ -20,7 +20,7 @@ const Tables = () => {
   const fetchTables = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await axios.get("/tables");
+     const res = await api.get("/tables");
       setTables(res.data?.tables || []);
     } catch (err) {
       console.error("Error fetching tables:", err);

@@ -27,6 +27,7 @@ const authRoutes = require("./modules/restaurant/restaurant.routes");
 
 const app = express();
 
+
 /* ✅ PROPER CORS FIX */
 app.use(cors({
   origin: [

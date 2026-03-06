@@ -12,7 +12,7 @@ import CustomModal from "../components/shared/CustomModal";
 import PrintBill from "../components/shared/PrintBill";
 
 import { useCart } from "../components/context/CartContext";
-import axios from "../utils/api";
+import api from "../utils/api"; 
 import { getEmployeeAuth } from "../utils/auth";
 
 const Menu = () => {
@@ -62,9 +62,7 @@ const Menu = () => {
         setLoadingTable(true);
         const token = getEmployeeAuth();
 
-        const res = await axios.get("/tables", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+      const res = await api.get("/tables"); 
 
         const table = res.data.tables.find(
           (t) => t.table_id === Number(tableId)
@@ -87,12 +85,8 @@ const Menu = () => {
       try {
         const token = getEmployeeAuth();
 
-        const res = await axios.get("/restaurant", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
+         const res = await api.get("/restaurant");
         setRestaurant(res.data.data);
-        console.log(res.data.data)
       } catch (error) {
         console.error(error);
       }
@@ -122,15 +116,8 @@ const Menu = () => {
         });
       }
 
-      const orderRes = await axios.post("/orders/create", orderData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      await axios.patch(
-        `/tables/${tableId}`,
-        { table_status: "OCCUPIED" },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+        const orderRes = await api.post("/orders/create", orderData);
+      await api.patch(`/tables/${tableId}`, { table_status: "OCCUPIED" });
 
       const orderId =
         orderRes.data?.order_id || Math.floor(Math.random() * 1000000);
@@ -196,12 +183,9 @@ const Menu = () => {
       try {
         const token = getEmployeeAuth();
 
-        const { data } = await axios.post(
-          "/razorpay/create-order",
-          { amount: Math.round(totalWithTax * 100) },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-
+        const { data } = await api.post("/razorpay/create-order", {
+          amount: Math.round(totalWithTax * 100),
+        });
         const options = {
           key: import.meta.env.VITE_RAZORPAY_KEY_ID,
           amount: data.data.amount,
